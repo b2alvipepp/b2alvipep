@@ -4,49 +4,356 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Payment</title>
+
   <style>
-    body {font-family: Arial; background:#0b1220; color:white; margin:0;}
-    .box {max-width:420px; margin:auto; padding:20px; text-align:center;}
-    .card {background:#111a30; padding:20px; border-radius:16px; margin-top:18px;}
-    img {width:100%; border-radius:14px;}
-    .nomor {font-size:18px; margin:10px 0; word-break:break-all;}
-    button {width:100%; padding:14px; border:0; border-radius:12px; font-size:16px;
-            background:#00d26a; cursor:pointer; font-weight:bold;}
-    .btn2 {background:#2a3a62; color:white; margin-top:10px;}
-    small {opacity:.8;}
+    :root{
+      --bg1:#050b16;
+      --bg2:#0b1535;
+      --card: rgba(255,255,255,.08);
+      --stroke: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.65);
+      --green:#00e676;
+      --blue:#2a6bff;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 15% 10%, rgba(42,107,255,.25), transparent 60%),
+        radial-gradient(900px 500px at 85% 25%, rgba(0,230,118,.18), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+    }
+
+    .wrap{
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 22px 16px 40px;
+    }
+
+    .top{
+      text-align:center;
+      margin: 10px 0 16px;
+    }
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 12px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
+      backdrop-filter: blur(10px);
+    }
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background:var(--green);
+      box-shadow: 0 0 16px rgba(0,230,118,.9);
+    }
+
+    h1{
+      margin: 10px 0 6px;
+      font-size: 30px;
+      letter-spacing:.5px;
+      text-transform: uppercase;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size: 14px;
+      line-height:1.5;
+    }
+
+    .tabs{
+      display:flex;
+      gap:10px;
+      margin: 18px 0 12px;
+    }
+    .tab{
+      flex:1;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      padding: 12px;
+      border-radius: 14px;
+      color: var(--muted);
+      font-weight: 700;
+      cursor:pointer;
+      backdrop-filter: blur(10px);
+      transition:.2s;
+    }
+    .tab.active{
+      color:var(--text);
+      border-color: rgba(42,107,255,.35);
+      box-shadow: 0 12px 30px rgba(42,107,255,.20);
+      background: rgba(42,107,255,.12);
+    }
+
+    .card{
+      border:1px solid var(--stroke);
+      background: var(--card);
+      border-radius: 22px;
+      padding: 16px;
+      margin-top: 12px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+      backdrop-filter: blur(14px);
+    }
+    .card h2{
+      margin: 6px 0 12px;
+      font-size:18px;
+      letter-spacing:.4px;
+    }
+
+    /* QR */
+    .qr-box{
+      border-radius: 18px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      position: relative;
+    }
+    .qr-box img{
+      width:100%;
+      display:block;
+      cursor: zoom-in;
+    }
+    .qr-tip{
+      text-align:center;
+      margin: 10px 0 0;
+      color:var(--muted);
+      font-size: 13px;
+    }
+
+    /* info nomor */
+    .method{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding: 12px;
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius: 16px;
+      background: rgba(0,0,0,.12);
+    }
+    .method .left{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .label{
+      font-size:12px;
+      color: var(--muted);
+    }
+    .value{
+      font-size:18px;
+      font-weight: 800;
+      letter-spacing:.2px;
+      word-break: break-all;
+    }
+
+    .btn{
+      width:100%;
+      padding: 14px 14px;
+      border:none;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 900;
+      cursor:pointer;
+      transition:.18s;
+      margin-top: 12px;
+    }
+    .btn:active{transform: scale(.99)}
+    .btn.green{background: var(--green); color:#062012;}
+    .btn.dark{background: rgba(255,255,255,.10); color:var(--text); border:1px solid var(--stroke);}
+    .btn.blue{background: rgba(42,107,255,.16); color:var(--text); border:1px solid rgba(42,107,255,.35);}
+
+    .footer{
+      text-align:center;
+      margin-top: 18px;
+      color: rgba(255,255,255,.35);
+      font-size: 12px;
+    }
+
+    /* Toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(10,14,22,.85);
+      border: 1px solid rgba(255,255,255,.15);
+      color: white;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s;
+      backdrop-filter: blur(14px);
+    }
+    .toast.show{opacity: 1; bottom: 26px;}
+
+    /* Modal Zoom QR */
+    .modal{
+      display:none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      justify-content:center;
+      align-items:center;
+      padding: 18px;
+      z-index: 9999;
+    }
+    .modal.show{display:flex;}
+    .modal .inner{
+      max-width: 520px;
+      width: 100%;
+      border-radius: 22px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.06);
+      backdrop-filter: blur(16px);
+    }
+    .modal img{width:100%; display:block;}
+    .modal .bar{
+      padding: 12px;
+      display:flex;
+      gap:10px;
+    }
+    .mini{
+      flex:1;
+      padding: 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      color: white;
+      font-weight: 900;
+      cursor:pointer;
+    }
   </style>
 </head>
+
 <body>
-  <div class="box">
-    <h2>PAYMENT</h2>
-    <small>Scan QR atau transfer nomor dibawah</small>
-
-    <div class="card">
-      <h3>QRIS</h3>
-      <img src="qris.png" alt="QRIS" />
-      <p style="margin-top:10px;">Scan QR ini untuk bayar</p>
+  <div class="wrap">
+    <div class="top">
+      <div class="badge"><span class="dot"></span> Payment Active</div>
+      <h1>PAYMENT</h1>
+      <p class="sub">Scan QR atau transfer nomor dibawah. Setelah bayar, bisa chat admin untuk konfirmasi.</p>
     </div>
 
-    <div class="card">
-      <h3>Nomor Transfer</h3>
-      <p class="nomor" id="nomor">DANA : 088902831453</p>
-
-      <button onclick="copyNomor()">Copy Nomor</button>
-      <button class="btn2" onclick="waAdmin()">Chat Admin</button>
+    <div class="tabs">
+      <button class="tab active" id="tabQris" onclick="switchMethod('qris')">QRIS</button>
+      <button class="tab" id="tabDana" onclick="switchMethod('dana')">DANA</button>
     </div>
 
-    <p style="margin-top:18px; opacity:.7;">© Payment</p>
+    <!-- CARD QRIS -->
+    <div class="card" id="cardQris">
+      <h2>QRIS</h2>
+      <div class="qr-box">
+        <img src="qris.png" alt="QRIS" id="qrImg" onclick="openZoom()" />
+      </div>
+      <p class="qr-tip">Klik gambar untuk zoom</p>
+
+      <button class="btn blue" onclick="downloadQR()">Download QR</button>
+    </div>
+
+    <!-- CARD NOMOR -->
+    <div class="card" id="cardDana" style="display:none;">
+      <h2>Nomor Transfer</h2>
+
+      <div class="method">
+        <div class="left">
+          <div class="label">Metode</div>
+          <div style="font-weight:900;">DANA</div>
+        </div>
+        <div class="left" style="text-align:right;">
+          <div class="label">Nomor</div>
+          <div class="value" id="nomor">088902831453</div>
+        </div>
+      </div>
+
+      <button class="btn green" onclick="copyNomor()">Copy Nomor</button>
+      <button class="btn dark" onclick="waAdmin()">Chat Admin</button>
+    </div>
+
+    <div class="footer">© Payment</div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">Berhasil disalin</div>
+
+  <!-- Modal Zoom -->
+  <div class="modal" id="modal">
+    <div class="inner">
+      <img src="qris.png" alt="QRIS Zoom" />
+      <div class="bar">
+        <button class="mini" onclick="downloadQR()">Download QR</button>
+        <button class="mini" onclick="closeZoom()">Tutup</button>
+      </div>
+    </div>
   </div>
 
   <script>
+    function showToast(msg){
+      const t = document.getElementById("toast");
+      t.innerText = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1600);
+    }
+
     function copyNomor(){
-      const text = document.getElementById("nomor").innerText;
+      const text = document.getElementById("nomor").innerText.trim();
       navigator.clipboard.writeText(text);
-      alert("Nomor berhasil di copy!");
+      showToast("Nomor berhasil di copy ✅");
     }
 
     function waAdmin(){
-      window.open("https://wa.me/6281390478631?text=Halo%20saya%20mau%20bayar", "_blank");
+      // ganti nomor WA admin di sini
+      window.open("https://wa.me/62888902831453?text=Halo%20admin%2C%20saya%20sudah%20bayar", "_blank");
+    }
+
+    function switchMethod(type){
+      const q = document.getElementById("cardQris");
+      const d = document.getElementById("cardDana");
+      const tq = document.getElementById("tabQris");
+      const td = document.getElementById("tabDana");
+
+      if(type === "qris"){
+        q.style.display = "block";
+        d.style.display = "none";
+        tq.classList.add("active");
+        td.classList.remove("active");
+      } else {
+        q.style.display = "none";
+        d.style.display = "block";
+        td.classList.add("active");
+        tq.classList.remove("active");
+      }
+    }
+
+    function openZoom(){
+      document.getElementById("modal").classList.add("show");
+    }
+    function closeZoom(){
+      document.getElementById("modal").classList.remove("show");
+    }
+    document.getElementById("modal").addEventListener("click", (e)=>{
+      if(e.target.id === "modal") closeZoom();
+    });
+
+    function downloadQR(){
+      const link = document.createElement("a");
+      link.href = "qris.png";
+      link.download = "qris.png";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      showToast("Download dimulai 📥");
     }
   </script>
 </body>
