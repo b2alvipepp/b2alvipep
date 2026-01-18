@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment</title>
+  <style>
+    body {font-family: Arial; background:#0b1220; color:white; margin:0;}
+    .box {max-width:420px; margin:auto; padding:20px; text-align:center;}
+    .card {background:#111a30; padding:20px; border-radius:16px; margin-top:18px;}
+    img {width:100%; border-radius:14px;}
+    .nomor {font-size:18px; margin:10px 0; word-break:break-all;}
+    button {width:100%; padding:14px; border:0; border-radius:12px; font-size:16px;
+            background:#00d26a; cursor:pointer; font-weight:bold;}
+    .btn2 {background:#2a3a62; color:white; margin-top:10px;}
+    small {opacity:.8;}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>PAYMENT</h2>
+    <small>Scan QR atau transfer nomor dibawah</small>
+
+    <div class="card">
+      <h3>QRIS</h3>
+      <img src="qris.png" alt="QRIS" />
+      <p style="margin-top:10px;">Scan QR ini untuk bayar</p>
+    </div>
+
+    <div class="card">
+      <h3>Nomor Transfer</h3>
+      <p class="nomor" id="nomor">DANA: 081234567890</p>
+
+      <button onclick="copyNomor()">Copy Nomor</button>
+      <button class="btn2" onclick="waAdmin()">Chat Admin</button>
+    </div>
+
+    <p style="margin-top:18px; opacity:.7;">© Payment</p>
+  </div>
+
+  <script>
+    function copyNomor(){
+      const text = document.getElementById("nomor").innerText;
+      navigator.clipboard.writeText(text);
+      alert("Nomor berhasil di copy!");
+    }
+
+    function waAdmin(){
+      window.open("https://wa.me/6288902831453?text=Halo%20saya%20mau%20bayar", "_blank");
+    }
+  </script>
+</body>
+</html>
